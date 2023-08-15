@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,8 +12,10 @@ import java.util.List;
 @Setter
 @ToString
 public class SearchCriteria {
+    @NotNull
     private LocalDateTime start;
-    LocalDateTime end;
-    List<String> uris;
-    boolean unique;
+    @NotNull
+    private LocalDateTime end;
+    private List<String> uris;
+    private boolean unique;
 }
