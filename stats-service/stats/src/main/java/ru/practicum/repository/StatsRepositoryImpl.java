@@ -23,14 +23,14 @@ public class StatsRepositoryImpl implements StatsRepository {
     @Override
     public Hit save(Hit hit) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("HITS")
-                .usingGeneratedKeyColumns("ID");
+                .withTableName("hits")
+                .usingGeneratedKeyColumns("id");
 
         SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("APP", hit.getApp())
-                .addValue("URI", hit.getUri())
-                .addValue("IP", hit.getIp())
-                .addValue("CREATED", hit.getTimestamp());
+                .addValue("app", hit.getApp())
+                .addValue("uri", hit.getUri())
+                .addValue("ip", hit.getIp())
+                .addValue("created", hit.getTimestamp());
 
         Number id = simpleJdbcInsert.executeAndReturnKey(parameters);
         hit.setId(id.longValue());
