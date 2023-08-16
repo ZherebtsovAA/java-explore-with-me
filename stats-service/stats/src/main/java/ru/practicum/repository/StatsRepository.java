@@ -1,8 +1,8 @@
 package ru.practicum.repository;
 
-import dto.SearchCriteria;
+import ru.practicum.dto.SearchCriteria;
 import ru.practicum.model.Hit;
-import ru.practicum.model.ViewStats;
+import ru.practicum.dto.ViewStats;
 
 import java.util.List;
 

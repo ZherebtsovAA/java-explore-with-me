@@ -1,29 +1,30 @@
 package ru.practicum.controller;
 
-import dto.HitDto;
-import dto.SearchCriteria;
-import dto.ViewStatsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.dto.HitDto;
+import ru.practicum.dto.SearchCriteria;
+import ru.practicum.dto.ViewStatsDto;
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.service.StatsService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public void save(@RequestBody HitDto hitDto,
+    public void save(@Valid @RequestBody HitDto hitDto,
                      HttpServletRequest request) {
         log.info("Получен запрос к эндпоинту: '{} {}', RequestBody: '{}'",
                 request.getMethod(), request.getRequestURI(), hitDto);
@@ -31,11 +32,15 @@ public class StatsController {
         statsService.save(hitDto);
     }
 
-    @PostMapping("/stats")
-    public List<ViewStatsDto> findStats(@RequestBody SearchCriteria searchCriteria,
+    @GetMapping("/stats")
+    public List<ViewStatsDto> findStats(SearchCriteria searchCriteria,
                                         HttpServletRequest request) {
-        log.info("Получен запрос к эндпоинту: '{} {}', RequestBody: '{}'",
-                request.getMethod(), request.getRequestURI(), searchCriteria);
+        log.info("Получен запрос к эндпоинту: '{} {}', Строка параметров запроса: '{}'",
+                request.getMethod(), request.getRequestURI(), request.getQueryString());
+
+        if (searchCriteria.getStart().isAfter(searchCriteria.getEnd())) {
+            throw new BadRequestException("проверьте параметры запроса: start, end");
+        }
 
         return statsService.findStats(searchCriteria);
     }

@@ -1,8 +1,8 @@
 package ru.practicum.service;
 
-import dto.HitDto;
-import dto.SearchCriteria;
-import dto.ViewStatsDto;
+import ru.practicum.dto.HitDto;
+import ru.practicum.dto.SearchCriteria;
+import ru.practicum.dto.ViewStatsDto;
 
 import java.util.List;
 
