@@ -1,6 +1,5 @@
 package ru.practicum.repository;
 
-import ru.practicum.dto.SearchCriteria;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -9,8 +8,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import ru.practicum.model.Hit;
+import ru.practicum.dto.SearchCriteria;
 import ru.practicum.dto.ViewStats;
+import ru.practicum.model.Hit;
 
 import java.util.List;
 
@@ -64,7 +64,8 @@ public class StatsRepositoryImpl implements StatsRepository {
                     .addValue("end", searchCriteria.getEnd());
         }
 
-        sql.append("GROUP BY app, uri");
+        sql.append("GROUP BY app, uri ");
+        sql.append("ORDER BY column_hits DESC");
 
         return namedParameterJdbcTemplate.query(sql.toString(), namedParameters, viewStatsRowMapper);
     }
