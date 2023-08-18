@@ -16,16 +16,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>stats</module>
+        <module>service</module>
         <module>dto</module>
         <module>client</module>
     </modules>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>
