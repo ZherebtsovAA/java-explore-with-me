@@ -1,4 +1,4 @@
-package ru.practicum.main.user.controller.admin;
+package ru.practicum.main.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-public class UserController {
+public class UserAdminController {
     private final UserService userService;
 
     @GetMapping
@@ -37,7 +37,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public UserDto create(@Valid @RequestBody NewUserRequest newUserRequest,
+    public UserDto create(@RequestBody @Valid NewUserRequest newUserRequest,
                           HttpServletRequest request) {
         log.info("Получен запрос к эндпоинту: '{} {}', RequestBody: '{}'",
                 request.getMethod(), request.getRequestURI(), newUserRequest);

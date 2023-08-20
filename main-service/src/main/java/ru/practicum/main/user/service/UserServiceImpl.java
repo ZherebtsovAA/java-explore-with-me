@@ -18,14 +18,14 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
     public List<UserDto> findAll(List<Long> ids, PageRequest pageRequest) {
         Page<User> users = ids == null
-                ? repository.findAll(pageRequest)
-                : repository.findAllByIdIn(ids, pageRequest);
+                ? userRepository.findAll(pageRequest)
+                : userRepository.findAllByIdIn(ids, pageRequest);
 
         return userMapper.toUserDto(users.getContent());
     }
@@ -33,15 +33,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDto save(NewUserRequest newUserRequest) {
-        User user = repository.save(userMapper.toUser(newUserRequest));
+        User user = userRepository.save(userMapper.toUser(newUserRequest));
         return userMapper.toUserDto(user);
     }
 
     @Transactional
     @Override
     public void deleteById(Long userId) {
-        repository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id=" + userId + " was not found"));
-        repository.deleteById(userId);
+        userRepository.deleteById(userId);
     }
 }

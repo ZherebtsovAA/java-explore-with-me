@@ -4,3 +4,11 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(250) NOT NULL,
     UNIQUE (email)
 );
+
+CREATE TABLE IF NOT EXISTS categories (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    UNIQUE (name)
+);
+
+CREATE INDEX IF NOT EXISTS index_categories_name ON categories (name);
