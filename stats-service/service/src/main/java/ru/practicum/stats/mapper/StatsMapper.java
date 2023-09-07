@@ -1,10 +1,10 @@
 package ru.practicum.stats.mapper;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.stats.dto.HitDto;
-import ru.practicum.stats.dto.ViewStatsDto;
-import ru.practicum.stats.model.Hit;
 import ru.practicum.stats.model.ViewStats;
+import ru.practicum.stats.HitDto;
+import ru.practicum.stats.ViewStatsDto;
+import ru.practicum.stats.model.Hit;
 
 import java.util.ArrayList;
 import java.util.List;
