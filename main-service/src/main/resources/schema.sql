@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS users (
     UNIQUE (email)
 );
 
+CREATE INDEX IF NOT EXISTS index_users_email ON users (email);
+
 CREATE TABLE IF NOT EXISTS categories (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
@@ -31,6 +33,12 @@ CREATE TABLE IF NOT EXISTS events (
     title VARCHAR(120) NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS index_events_category ON events (category);
+CREATE INDEX IF NOT EXISTS index_events_initiator ON events (initiator);
+CREATE INDEX IF NOT EXISTS index_events_event_date ON events (event_date);
+CREATE INDEX IF NOT EXISTS index_events_paid ON events (paid);
+CREATE INDEX IF NOT EXISTS index_events_state ON events (state);
+
 CREATE TABLE IF NOT EXISTS requests (
    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
    created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
@@ -38,6 +46,10 @@ CREATE TABLE IF NOT EXISTS requests (
    requester BIGINT NOT NULL REFERENCES users (id),
    status VARCHAR(9) NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS index_requests_event ON requests (event);
+CREATE INDEX IF NOT EXISTS index_requests_requester ON requests (requester);
+CREATE INDEX IF NOT EXISTS index_requests_status ON requests (status);
 
 CREATE TABLE IF NOT EXISTS compilations (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
