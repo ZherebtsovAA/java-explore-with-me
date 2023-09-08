@@ -58,20 +58,19 @@ public class RequestParticipationServiceImpl implements RequestParticipationServ
             throw new ConflictException("Нельзя участвовать в неопубликованном событии");
         }
 
-        RequestParticipation templateSearchRequestParticipation = new RequestParticipation();
         Event templateSearchEvent = new Event();
-        templateSearchEvent.setId(event.getId());
+        templateSearchEvent.setId(eventId);
+
+        RequestParticipation templateSearchRequestParticipation = new RequestParticipation();
         templateSearchRequestParticipation.setEvent(templateSearchEvent);
-        templateSearchRequestParticipation.setStatus(RequestParticipationState.CONFIRMED);
-
-        RequestParticipation newRequestParticipation = requestParticipationMapper.toRequestParticipation(requester, event);
-
-        templateSearchRequestParticipation.setStatus(null);
         templateSearchRequestParticipation.setRequester(requester);
         if (requestParticipationRepository.exists(Example.of(templateSearchRequestParticipation))) {
             throw new ConflictException("Нельзя добавить повторный запрос");
         }
 
+        RequestParticipation newRequestParticipation = new RequestParticipation();
+        newRequestParticipation.setEvent(event);
+        newRequestParticipation.setRequester(requester);
         if (event.getRequestModeration()) { // требуется пре-модерация запросов на участие
             newRequestParticipation.setStatus(RequestParticipationState.PENDING);
         } else {
@@ -79,17 +78,19 @@ public class RequestParticipationServiceImpl implements RequestParticipationServ
         }
 
         if (event.getParticipantLimit() != 0) { // значит установлен лимит
+            templateSearchRequestParticipation.setRequester(null);
+            templateSearchRequestParticipation.setStatus(RequestParticipationState.CONFIRMED);
             long requestCount = requestParticipationRepository.count(Example.of(templateSearchRequestParticipation));
             if (requestCount >= event.getParticipantLimit()) {
                 throw new ConflictException("Достигнут лимит запросов на участие");
             }
-        }
-
-        if (event.getParticipantLimit() == 0) {
+        } else {
             newRequestParticipation.setStatus(RequestParticipationState.CONFIRMED);
         }
 
-        return requestParticipationMapper.toParticipationRequestDto(requestParticipationRepository.save(newRequestParticipation));
+        requestParticipationRepository.save(newRequestParticipation);
+
+        return requestParticipationMapper.toParticipationRequestDto(newRequestParticipation);
     }
 
     @Transactional
@@ -98,14 +99,15 @@ public class RequestParticipationServiceImpl implements RequestParticipationServ
         User user = userService.findById(userId);
 
         RequestParticipation requestParticipation = requestParticipationRepository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException("Запроса на участие с id=" + userId + " не найдено"));
+                .orElseThrow(() -> new NotFoundException("Запроса на участие с id=" + requestId + " не найдено"));
 
         if (!Objects.equals(user, requestParticipation.getRequester())) {
             throw new ForbiddenException("Вы не являетесь владельцем запроса на участие");
         }
 
         requestParticipation.setStatus(RequestParticipationState.CANCELED);
+        requestParticipationRepository.save(requestParticipation);
 
-        return requestParticipationMapper.toParticipationRequestDto(requestParticipationRepository.save(requestParticipation));
+        return requestParticipationMapper.toParticipationRequestDto(requestParticipation);
     }
 }

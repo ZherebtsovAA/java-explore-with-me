@@ -3,17 +3,14 @@ package ru.practicum.event.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.event.model.Event;
-import ru.practicum.request.repository.IConfirmedRequests;
+import ru.practicum.request.repository.IConfirmedRequestsCount;
 import ru.practicum.request.repository.RequestParticipationRepository;
 import ru.practicum.stats.HitDto;
 import ru.practicum.stats.StatsClient;
 import ru.practicum.stats.ViewStatsDto;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.practicum.request.model.RequestParticipationState.CONFIRMED;
@@ -62,7 +59,12 @@ public class EventStatisticsService {
             return new HashMap<>();
         }
 
-        return requestParticipationRepository.findByStatusAndEventIn(CONFIRMED, events).stream()
-                .collect(Collectors.toMap(IConfirmedRequests::getEventId, IConfirmedRequests::getTotalRequest));
+        Collection<Long> eventIds = events.stream()
+                .map(Event::getId)
+                .collect(Collectors.toList());
+
+        return requestParticipationRepository.countTotalRequestsByEventId(CONFIRMED.toString(), eventIds)
+                .stream()
+                .collect(Collectors.toMap(IConfirmedRequestsCount::getEventId, IConfirmedRequestsCount::getTotalRequest));
     }
 }

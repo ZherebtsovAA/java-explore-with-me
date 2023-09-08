@@ -1,6 +1,6 @@
 package ru.practicum.request.repository;
 
-public interface IConfirmedRequests {
+public interface IConfirmedRequestsCount {
     Long getEventId();
 
     Integer getTotalRequest();

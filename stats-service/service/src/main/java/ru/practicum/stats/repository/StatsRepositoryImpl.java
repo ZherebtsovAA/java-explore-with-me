@@ -71,19 +71,6 @@ public class StatsRepositoryImpl implements StatsRepository {
         return namedParameterJdbcTemplate.query(sql.toString(), parameters, viewStatsRowMapper);
     }
 
-/*    public List<Hit> findAll() {
-        String sql = "SELECT * FROM hits";
-
-        return namedParameterJdbcTemplate.query(sql.toString(), hitRowMapper);
-    }*/
-
-/*    private final RowMapper<Hit> hitRowMapper = (resultSet, rowNum) ->
-            new Hit(resultSet.getLong("ID"),
-                    resultSet.getString("APP"),
-                    resultSet.getString("URI"),
-                    resultSet.getString("IP"),
-                    resultSet.getTimestamp("CREATED").toLocalDateTime());*/
-
     private final RowMapper<ViewStats> viewStatsRowMapper = (resultSet, rowNum) -> ViewStats.builder()
             .app(resultSet.getString("APP"))
             .uri(resultSet.getString("URI"))

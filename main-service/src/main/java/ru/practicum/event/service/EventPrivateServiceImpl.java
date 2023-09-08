@@ -1,7 +1,6 @@
 package ru.practicum.event.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,13 +57,13 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public List<EventShortDto> getEventShort(Long userId, PageRequest pageRequest) {
         userService.findById(userId);
-        List<Event> foundListEvents = eventRepository.findAllByInitiator_Id(userId, pageRequest);
+        List<Event> foundEvents = eventRepository.findAllByInitiator_Id(userId, pageRequest);
 
-        Map<Long, Integer> views = eventStatisticsService.getViews(foundListEvents);
-        Map<Long, Integer> confirmedRequests = eventStatisticsService.getConfirmedRequests(foundListEvents);
+        Map<Long, Integer> views = eventStatisticsService.getViews(foundEvents);
+        Map<Long, Integer> confirmedRequests = eventStatisticsService.getConfirmedRequests(foundEvents);
 
         List<EventShortDto> resultList = new ArrayList<>();
-        for (Event foundEvent : foundListEvents) {
+        for (Event foundEvent : foundEvents) {
             resultList.add(eventMapper.toEventShortDto(foundEvent,
                     confirmedRequests.getOrDefault(foundEvent.getId(), 0),
                     views.getOrDefault(foundEvent.getId(), 0)));
@@ -105,15 +104,18 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         Event event = findById(eventId);
 
         if (!Objects.equals(user, event.getInitiator())) {
-            throw new ForbiddenException("Вы не являетесь владельцем мороприятия");
+            throw new ForbiddenException("Вы не являетесь владельцем мероприятия");
         }
 
         Map<Long, Integer> views = eventStatisticsService.getViews(List.of(event));
         Map<Long, Integer> confirmedRequests = eventStatisticsService.getConfirmedRequests(List.of(event));
 
-        return eventMapper.toEventFullDto(event, categoryMapper.toCategoryDto(event.getCategory()),
+        return eventMapper.toEventFullDto(
+                event,
+                categoryMapper.toCategoryDto(event.getCategory()),
                 confirmedRequests.getOrDefault(event.getId(), 0),
-                userMapper.toUserShortDto(event.getInitiator()), views.getOrDefault(event.getId(), 0));
+                userMapper.toUserShortDto(event.getInitiator()),
+                views.getOrDefault(event.getId(), 0));
     }
 
     @Transactional
@@ -123,7 +125,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         Event event = findById(eventId);
 
         if (!Objects.equals(user, event.getInitiator())) {
-            throw new ForbiddenException("Вы не являетесь владельцем мороприятия");
+            throw new ForbiddenException("Вы не являетесь владельцем мероприятия");
         }
 
         if (event.getState() == PUBLISHED) {
@@ -133,21 +135,15 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         // update event in DB
         Event updateEvent = eventRepository.save(checkBeforeUpdate(event, updateEventUserRequest));
 
-        RequestParticipation templateSearchRequestParticipation = new RequestParticipation();
-        Event templateSearchEvent = new Event();
-        templateSearchEvent.setId(updateEvent.getId());
-        templateSearchRequestParticipation.setEvent(templateSearchEvent);
-        templateSearchRequestParticipation.setStatus(CONFIRMED);
-        long confirmedRequests = requestParticipationRepository.count(Example.of(templateSearchRequestParticipation));
+        Map<Long, Integer> views = eventStatisticsService.getViews(List.of(updateEvent));
+        Map<Long, Integer> confirmedRequests = eventStatisticsService.getConfirmedRequests(List.of(updateEvent));
 
-        //long views = getViews(updateEvent.getCreatedOn(), LocalDateTime.now(),
-        //        List.of(String.join("/", "/events", updateEvent.getId().toString())), true)
-        //        .getOrDefault(updateEvent.getId(), 0L);
-
-        int views = eventStatisticsService.getViews(List.of(updateEvent)).getOrDefault(updateEvent.getId(), 0);
-
-        return eventMapper.toEventFullDto(updateEvent, categoryMapper.toCategoryDto(event.getCategory()), (int) confirmedRequests,
-                userMapper.toUserShortDto(user), views);
+        return eventMapper.toEventFullDto(
+                updateEvent,
+                categoryMapper.toCategoryDto(updateEvent.getCategory()),
+                confirmedRequests.getOrDefault(updateEvent.getId(), 0),
+                userMapper.toUserShortDto(updateEvent.getInitiator()),
+                views.getOrDefault(updateEvent.getId(), 0));
     }
 
     private Event checkBeforeUpdate(Event event, UpdateEventUserRequest updateEventUserRequest) {
@@ -210,7 +206,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             event.setRequestModeration(requestModeration);
         }
 
-        // if (stateAction != null && event.getState() != EventState.PUBLISHED) {
         // проверка на event.getState() == EventState.PUBLISHED выполнена ранее
         // сейчас event находится в одном из двух состояний: PENDING или CANCELED
         EventStateAction stateAction = updateEventUserRequest.getStateAction();
@@ -221,14 +216,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             if (event.getState() == EventState.CANCELED && stateAction == SEND_TO_REVIEW) {
                 event.setState(EventState.PENDING);
             }
-            /*
-            if (stateAction == EventStateAction.SEND_TO_REVIEW) {
-                event.setState(EventState.PENDING);
-            }
-            if (stateAction == EventStateAction.CANCEL_REVIEW) {
-                event.setState(EventState.CANCELED);
-            }
-            */
         }
 
         String title = updateEventUserRequest.getTitle();
@@ -251,7 +238,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             throw new ForbiddenException("Вы не являетесь владельцем события");
         }
 
-        return requestParticipationMapper.toParticipationRequestDto(requestParticipationRepository.findAllByEvent_Id(eventId));
+        return requestParticipationMapper.toParticipationRequestDto(
+                requestParticipationRepository.findAllByEvent_Id(eventId));
     }
 
     @Transactional
@@ -265,16 +253,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             throw new ForbiddenException("Вы не являетесь владельцем события");
         }
 
-        RequestParticipation templateSearchRequestParticipation = new RequestParticipation();
-        Event templateSearchEvent = new Event();
-        templateSearchEvent.setId(event.getId());
-        templateSearchRequestParticipation.setEvent(templateSearchEvent);
-        templateSearchRequestParticipation.setStatus(CONFIRMED);
-        long requestConfirmedCount = requestParticipationRepository.count(Example.of(templateSearchRequestParticipation));
-        if (event.getParticipantLimit() != 0) { // значит установлен лимит
-            if (requestConfirmedCount >= event.getParticipantLimit()) {
-                throw new ConflictException("Достигнут лимит запросов на участие");
-            }
+        List<Long> requestIds = eventRequestStatusUpdateRequest.getRequestIds();
+        if (requestIds == null || requestIds.isEmpty()) {
+            throw new BadRequestException("Не указаны идентификаторы запросов на участие");
         }
 
         // заявки на участие
@@ -287,39 +268,54 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                     throw new ConflictException("Статус можно изменить только у заявок, находящихся в состоянии ожидания");
                 });
 
-        if (!event.getRequestModeration() && event.getParticipantLimit() == 0) {
-            List<RequestParticipation> confirmedRequests = requests.stream()
+        Map<Long, Integer> eventIdToTotalRequests = eventStatisticsService.getConfirmedRequests(List.of(event));
+        long requestConfirmedCount = eventIdToTotalRequests.getOrDefault(event.getId(), 0);
+        if (event.getParticipantLimit() != 0) { // значит установлен лимит
+            if (requestConfirmedCount >= event.getParticipantLimit()) {
+                throw new ConflictException("Достигнут лимит запросов на участие");
+            }
+        }
+
+        if (event.getParticipantLimit() == 0 && !event.getRequestModeration()) {
+            requests = requests.stream()
                     .peek(e -> e.setStatus(CONFIRMED))
                     .collect(Collectors.toList());
 
-            return new EventRequestStatusUpdateResult(requestParticipationMapper.toParticipationRequestDto(confirmedRequests),
+            requestParticipationRepository.saveAll(requests);
+
+            return new EventRequestStatusUpdateResult(requestParticipationMapper.toParticipationRequestDto(requests),
                     new ArrayList<>());
         }
 
-        List<RequestParticipation> confirmedRequests = new ArrayList<>(0);
-        List<RequestParticipation> rejectedRequests = new ArrayList<>(0);
+        List<RequestParticipation> confirmed = new ArrayList<>();
+        List<RequestParticipation> rejected = new ArrayList<>();
 
         if (eventRequestStatusUpdateRequest.getStatus() == REJECTED) {
-            rejectedRequests = requests.stream()
+            rejected = requests.stream()
                     .peek(e -> e.setStatus(REJECTED))
                     .collect(Collectors.toList());
+
+            requestParticipationRepository.saveAll(rejected);
         }
 
         if (eventRequestStatusUpdateRequest.getStatus() == CONFIRMED) {
-            confirmedRequests = requests.stream()
+            confirmed = requests.stream()
                     .limit(event.getParticipantLimit() - requestConfirmedCount)
                     .peek(e -> e.setStatus(CONFIRMED))
                     .collect(Collectors.toList());
 
-            rejectedRequests = requests.stream()
+            rejected = requests.stream()
                     .skip(event.getParticipantLimit() - requestConfirmedCount)
                     .peek(e -> e.setStatus(REJECTED))
                     .collect(Collectors.toList());
+
+            requestParticipationRepository.saveAll(confirmed);
+            requestParticipationRepository.saveAll(rejected);
         }
 
         return new EventRequestStatusUpdateResult(
-                requestParticipationMapper.toParticipationRequestDto(confirmedRequests),
-                requestParticipationMapper.toParticipationRequestDto(rejectedRequests));
+                requestParticipationMapper.toParticipationRequestDto(confirmed),
+                requestParticipationMapper.toParticipationRequestDto(rejected));
     }
 
     @Override

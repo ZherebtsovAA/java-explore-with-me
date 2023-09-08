@@ -38,3 +38,15 @@ CREATE TABLE IF NOT EXISTS requests (
    requester BIGINT NOT NULL REFERENCES users (id),
    status VARCHAR(9) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS compilations (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    pinned BOOLEAN NOT NULL DEFAULT FALSE,
+    title VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS compilations_events (
+    compilations_id BIGINT NOT NULL REFERENCES compilations (id),
+    event_id BIGINT NOT NULL REFERENCES events (id),
+    UNIQUE (compilations_id, event_id)
+);

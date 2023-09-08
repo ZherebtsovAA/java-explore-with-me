@@ -25,10 +25,11 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Transactional
     @Override
     public CategoryDto save(NewCategoryDto newCategoryDto) {
-        if (categoryRepository.exists(Example.of(categoryMapper.toCategory(newCategoryDto)))) {
+        Category category = categoryMapper.toCategory(newCategoryDto);
+        if (categoryRepository.exists(Example.of(category))) {
             throw new ConflictException("Нарушение целостности данных. Категория с name=" + newCategoryDto.getName() + " создана ранее");
         }
-        Category category = categoryRepository.save(categoryMapper.toCategory(newCategoryDto));
+        categoryRepository.save(category);
 
         return categoryMapper.toCategoryDto(category);
     }
@@ -65,6 +66,8 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
         }
 
         category.setName(categoryDto.getName());
-        return categoryMapper.toCategoryDto(categoryRepository.save(category));
+        categoryRepository.save(category);
+
+        return categoryMapper.toCategoryDto(category);
     }
 }

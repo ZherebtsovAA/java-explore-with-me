@@ -74,7 +74,7 @@ public class EventAdminServiceImpl implements EventAdminService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Событие с id=" + eventId + " не найдено"));
 
-        Event eventUpdate = updateAndCheckEvent(event, updateEventAdminRequest);
+        Event eventUpdate = eventRepository.save(updateAndCheckEvent(event, updateEventAdminRequest));
 
         Map<Long, Integer> views = eventStatisticsService.getViews(List.of(eventUpdate));
         Map<Long, Integer> confirmedRequests = eventStatisticsService.getConfirmedRequests(List.of(eventUpdate));

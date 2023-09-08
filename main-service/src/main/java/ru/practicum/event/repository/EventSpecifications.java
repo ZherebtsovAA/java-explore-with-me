@@ -11,7 +11,6 @@ import javax.persistence.criteria.Join;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @UtilityClass
 public class EventSpecifications {
     public Specification<Event> belongsToInitiators(List<Long> users) {
@@ -46,12 +45,10 @@ public class EventSpecifications {
 
     public Specification<Event> containsToAnnotationCaseInsensitive(String annotation) {
         return (root, query, builder) -> builder.like(builder.upper(root.get("annotation")), "%" + annotation.toUpperCase() + "%");
-        //return (root, query, builder) -> builder.like(root.get("annotation"), "%" + text.toUpperCase() + "%");
     }
 
     public Specification<Event> containsToDescriptionCaseInsensitive(String description) {
         return (root, query, builder) -> builder.like(builder.upper(root.get("description")), "%" + description.toUpperCase() + "%");
-        //return (root, query, builder) -> builder.like(root.get("description"), "%" + text.toUpperCase() + "%");
     }
 
     public Specification<Event> isPaid(Boolean paid) {

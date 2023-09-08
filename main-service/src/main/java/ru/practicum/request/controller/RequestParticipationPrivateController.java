@@ -10,7 +10,6 @@ import ru.practicum.request.service.RequestParticipationService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -32,7 +31,7 @@ public class RequestParticipationPrivateController {
     @PostMapping("/{userId}/requests")
     @ResponseStatus(code = HttpStatus.CREATED)
     public ParticipationRequestDto createRequestParticipation(@PathVariable @Positive Long userId,
-                                                              @RequestParam(required = true) @Positive Long eventId,
+                                                              @RequestParam @Positive Long eventId,
                                                               HttpServletRequest request) {
         log.info("Получен запрос к эндпоинту: '{} {}', Строка параметров запроса: '{}'",
                 request.getMethod(), request.getRequestURI(), request.getQueryString());
