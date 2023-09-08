@@ -62,3 +62,5 @@ CREATE TABLE IF NOT EXISTS compilations_events (
     event_id BIGINT NOT NULL REFERENCES events (id),
     UNIQUE (compilations_id, event_id)
 );
+
+CREATE INDEX IF NOT EXISTS index_compilations_events ON compilations_events (compilations_id, event_id);

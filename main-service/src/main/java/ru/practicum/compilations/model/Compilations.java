@@ -23,7 +23,7 @@ public class Compilations {
     @Column(nullable = false, length = 50)
     private String title;
     @ElementCollection
-    @CollectionTable(name="compilations_events", joinColumns = @JoinColumn(name = "compilations_id"))
+    @CollectionTable(name = "compilations_events", joinColumns = @JoinColumn(name = "compilations_id"))
     @Column(name = "event_id")
     private Set<Long> events;
 }
