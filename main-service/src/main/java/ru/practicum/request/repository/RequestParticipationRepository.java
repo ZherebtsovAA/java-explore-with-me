@@ -17,4 +17,10 @@ public interface RequestParticipationRepository extends JpaRepository<RequestPar
     List<IConfirmedRequestsCount> countTotalRequestsByEventId(String status, Collection<Long> eventIds);
 
     List<RequestParticipation> findAllByEvent_Id(Long eventId);
+
+    interface IConfirmedRequestsCount {
+        Long getEventId();
+
+        Integer getTotalRequest();
+    }
 }

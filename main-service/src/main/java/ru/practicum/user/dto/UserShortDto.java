@@ -1,13 +1,9 @@
 package ru.practicum.user.dto;
 
-import lombok.*;
+import lombok.Value;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@ToString
+@Value
 public class UserShortDto {
-    private Long id;
-    private String name;
+    Long id;
+    String name;
 }

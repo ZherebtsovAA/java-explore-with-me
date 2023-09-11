@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
-import ru.practicum.category.service.CategoryPublicService;
+import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.*;
@@ -35,7 +35,7 @@ public class EventAdminServiceImpl implements EventAdminService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final UserMapper userMapper;
-    private final CategoryPublicService categoryPublicService;
+    private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final EventStatisticsService eventStatisticsService;
 
@@ -98,7 +98,8 @@ public class EventAdminServiceImpl implements EventAdminService {
 
         Long catId = updateEventAdminRequest.getCategory();
         if (catId != null) {
-            Category category = categoryPublicService.findById(catId);
+            Category category = categoryRepository.findById(catId)
+                    .orElseThrow(() -> new NotFoundException("Категория с id=" + catId + " не найдена"));
             event.setCategory(category);
         }
 

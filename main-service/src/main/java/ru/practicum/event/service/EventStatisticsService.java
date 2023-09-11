@@ -3,7 +3,6 @@ package ru.practicum.event.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.event.model.Event;
-import ru.practicum.request.repository.IConfirmedRequestsCount;
 import ru.practicum.request.repository.RequestParticipationRepository;
 import ru.practicum.stats.HitDto;
 import ru.practicum.stats.StatsClient;
@@ -65,6 +64,8 @@ public class EventStatisticsService {
 
         return requestParticipationRepository.countTotalRequestsByEventId(CONFIRMED.toString(), eventIds)
                 .stream()
-                .collect(Collectors.toMap(IConfirmedRequestsCount::getEventId, IConfirmedRequestsCount::getTotalRequest));
+                .collect(Collectors.toMap(
+                        RequestParticipationRepository.IConfirmedRequestsCount::getEventId,
+                        RequestParticipationRepository.IConfirmedRequestsCount::getTotalRequest));
     }
 }

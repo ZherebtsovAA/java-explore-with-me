@@ -1,9 +1,6 @@
-# версия Docker Compose
 version: '3.8'
 
-# имена и описания контейнеров, которые должны быть развёрнуты
 services:
-  # описание контейнера ewm-service
   ewm-service:
     build: ./main-service
     container_name: ewm-service
@@ -18,23 +15,18 @@ services:
       - DB_HOST=ewm-db
       - DB_PORT=5432
 
-  # описание контейнера ewm-db
   ewm-db:
-    # образ, из которого должен быть запущен контейнер
     image: postgres:13.7-alpine
-    # volume и связанная с ним директория в контейнере
     volumes:
       - /var/lib/postgresql/data/
     container_name: ewm-db
     ports:
       - "6541:5432"
-    # переменные окружения
     environment:
       - POSTGRES_DB=main
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
-  # описание контейнера stats-server
   stats-server:
     build: ./stats-service
     container_name: stats-server
@@ -49,17 +41,13 @@ services:
       - DB_HOST=stats-db
       - DB_PORT=5432
 
-  # описание контейнера stats-db
   stats-db:
-    # образ, из которого должен быть запущен контейнер
     image: postgres:13.7-alpine
-    # volume и связанная с ним директория в контейнере
     volumes:
       - /var/lib/postgresql/data/
     container_name: stats-db
     ports:
       - "6542:5432"
-    # переменные окружения
     environment:
       - POSTGRES_DB=stats
       - POSTGRES_USER=root

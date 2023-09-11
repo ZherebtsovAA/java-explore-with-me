@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 @ToString
 public class NewCompilationDto {
-    private boolean pinned; //default: false
+    private boolean pinned;
     @NotBlank
     @Size(min = 1, max = 50)
     private String title;

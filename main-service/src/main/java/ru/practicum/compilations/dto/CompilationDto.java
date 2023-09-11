@@ -5,14 +5,10 @@ import ru.practicum.event.dto.EventShortDto;
 
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@ToString
+@Value
 public class CompilationDto {
-    private List<EventShortDto> events;
-    private Long id;
-    private Boolean pinned;
-    private String title;
+    List<EventShortDto> events;
+    Long id;
+    Boolean pinned;
+    String title;
 }

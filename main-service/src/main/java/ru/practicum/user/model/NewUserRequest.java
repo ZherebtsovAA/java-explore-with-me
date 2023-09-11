@@ -1,22 +1,18 @@
 package ru.practicum.user.model;
 
-import lombok.*;
+import lombok.Value;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@ToString
+@Value
 public class NewUserRequest {
     @NotBlank
     @Size(min = 6, max = 254)
     @Email
-    private String email;
+    String email;
     @NotBlank
     @Size(min = 2, max = 250)
-    private String name;
+    String name;
 }

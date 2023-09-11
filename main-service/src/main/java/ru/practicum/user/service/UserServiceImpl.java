@@ -6,13 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.exception.ConflictException;
+import ru.practicum.exception.NotFoundException;
 import ru.practicum.user.dto.UserDto;
+import ru.practicum.user.mapper.UserMapper;
 import ru.practicum.user.model.NewUserRequest;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
-import ru.practicum.exception.ConflictException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.user.mapper.UserMapper;
 
 import java.util.List;
 
@@ -55,8 +55,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void deleteById(Long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id=" + userId + " не найден"));
-        userRepository.deleteById(userId);
+        if (userRepository.existsById(userId)) {
+            userRepository.deleteById(userId);
+        } else {
+            throw new NotFoundException("Пользователь с id=" + userId + " не найден");
+        }
     }
 }

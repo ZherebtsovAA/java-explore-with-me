@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
-import ru.practicum.category.service.CategoryPublicService;
+import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
@@ -48,7 +48,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final EventMapper eventMapper;
     private final UserService userService;
     private final UserMapper userMapper;
-    private final CategoryPublicService categoryPublicService;
+    private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final RequestParticipationRepository requestParticipationRepository;
     private final RequestParticipationMapper requestParticipationMapper;
@@ -56,7 +56,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public List<EventShortDto> getEventShort(Long userId, PageRequest pageRequest) {
-        userService.findById(userId);
         List<Event> foundEvents = eventRepository.findAllByInitiator_Id(userId, pageRequest);
 
         Map<Long, Integer> views = eventStatisticsService.getViews(foundEvents);
@@ -86,7 +85,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         }
 
         User initiator = userService.findById(userId);
-        Category category = categoryPublicService.findById(newEventDto.getCategory());
+        Category category = categoryRepository.findById(newEventDto.getCategory())
+                .orElseThrow(() -> new NotFoundException("Категория с id=" + newEventDto.getCategory() + " не найдена"));
 
         Event event = eventMapper.toEvent(newEventDto, category, initiator, newEventDto.getLocation());
         event.setState(EventState.PENDING);
@@ -100,10 +100,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public EventFullDto getEventFull(Long userId, Long eventId) {
-        User user = userService.findById(userId);
         Event event = findById(eventId);
 
-        if (!Objects.equals(user, event.getInitiator())) {
+        if (!Objects.equals(userId, event.getInitiator().getId())) {
             throw new ForbiddenException("Вы не являетесь владельцем мероприятия");
         }
 
@@ -121,10 +120,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Transactional
     @Override
     public EventFullDto patchUpdateEvent(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
-        User user = userService.findById(userId);
         Event event = findById(eventId);
 
-        if (!Objects.equals(user, event.getInitiator())) {
+        if (!Objects.equals(userId, event.getInitiator().getId())) {
             throw new ForbiddenException("Вы не являетесь владельцем мероприятия");
         }
 
@@ -160,7 +158,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             if (catId < 1) {
                 throw new BadRequestException("Поле category должно быть положительным");
             }
-            Category category = categoryPublicService.findById(catId);
+            Category category = categoryRepository.findById(catId)
+                    .orElseThrow(() -> new NotFoundException("Категория с id=" + catId + " не найдена"));
             event.setCategory(category);
         }
 
@@ -231,10 +230,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public List<ParticipationRequestDto> getParticipationRequest(Long userId, Long eventId) {
-        User user = userService.findById(userId);
         Event event = findById(eventId);
 
-        if (!Objects.equals(user, event.getInitiator())) {
+        if (!Objects.equals(userId, event.getInitiator().getId())) {
             throw new ForbiddenException("Вы не являетесь владельцем события");
         }
 
@@ -246,10 +244,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     @Override
     public EventRequestStatusUpdateResult patchUpdateStatus(Long userId, Long eventId,
                                                             EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
-        User user = userService.findById(userId);
         Event event = findById(eventId);
 
-        if (!Objects.equals(user, event.getInitiator())) {
+        if (!Objects.equals(userId, event.getInitiator().getId())) {
             throw new ForbiddenException("Вы не являетесь владельцем события");
         }
 

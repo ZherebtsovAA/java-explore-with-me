@@ -1,13 +1,9 @@
 package ru.practicum.event.model;
 
-import lombok.*;
+import lombok.Value;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@ToString
+@Value
 public class Location {
-    private float lat;
-    private float lon;
+    float lat;
+    float lon;
 }
