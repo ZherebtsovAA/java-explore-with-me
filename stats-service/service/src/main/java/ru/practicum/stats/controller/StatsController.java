@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.stats.dto.HitDto;
+import ru.practicum.stats.HitDto;
 import ru.practicum.stats.dto.SearchCriteriaDto;
-import ru.practicum.stats.dto.ViewStatsDto;
+import ru.practicum.stats.ViewStatsDto;
 import ru.practicum.stats.exception.BadRequestException;
 import ru.practicum.stats.service.StatsService;
 

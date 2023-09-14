@@ -9,10 +9,11 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.practicum.stats.dto.SearchCriteriaDto;
-import ru.practicum.stats.model.ViewStats;
 import ru.practicum.stats.model.Hit;
+import ru.practicum.stats.model.ViewStats;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -50,24 +51,24 @@ public class StatsRepositoryImpl implements StatsRepository {
 
         sql.append("FROM hits WHERE created >= :start AND created <= :end ");
 
-        SqlParameterSource namedParameters;
-        if (searchCriteriaDto.getUris() != null && !searchCriteriaDto.getUris().isEmpty()) {
-            namedParameters = new MapSqlParameterSource()
-                    .addValue("start", searchCriteriaDto.getStart())
-                    .addValue("end", searchCriteriaDto.getEnd())
-                    .addValue("uris", searchCriteriaDto.getUris());
+        MapSqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("start", searchCriteriaDto.getStart())
+                .addValue("end", searchCriteriaDto.getEnd());
 
+        if (searchCriteriaDto.getUris() != null && !searchCriteriaDto.getUris().isEmpty()) {
             sql.append("AND uri IN (:uris) ");
-        } else {
-            namedParameters = new MapSqlParameterSource()
-                    .addValue("start", searchCriteriaDto.getStart())
-                    .addValue("end", searchCriteriaDto.getEnd());
+
+            List<String> uris = searchCriteriaDto.getUris().stream()
+                    .map(element -> element.replace("[", "").replace("]", ""))
+                    .collect(Collectors.toList());
+
+            parameters.addValue("uris", uris);
         }
 
         sql.append("GROUP BY app, uri ");
         sql.append("ORDER BY column_hits DESC");
 
-        return namedParameterJdbcTemplate.query(sql.toString(), namedParameters, viewStatsRowMapper);
+        return namedParameterJdbcTemplate.query(sql.toString(), parameters, viewStatsRowMapper);
     }
 
     private final RowMapper<ViewStats> viewStatsRowMapper = (resultSet, rowNum) -> ViewStats.builder()
