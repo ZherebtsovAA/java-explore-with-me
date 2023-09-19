@@ -9,6 +9,7 @@ import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.utils.Constants;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Value
 public class EventFullDto {
@@ -31,4 +32,5 @@ public class EventFullDto {
     EventState state;
     String title;
     Integer views;
+    List<AdminCommentDto> adminComments;
 }

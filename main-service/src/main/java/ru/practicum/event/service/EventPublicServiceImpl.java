@@ -113,6 +113,7 @@ public class EventPublicServiceImpl implements EventPublicService {
                 categoryMapper.toCategoryDto(event.getCategory()),
                 confirmedRequests.getOrDefault(event.getId(), 0),
                 userMapper.toUserShortDto(event.getInitiator()),
-                views.getOrDefault(event.getId(), 0));
+                views.getOrDefault(event.getId(), 0),
+                null);
     }
 }

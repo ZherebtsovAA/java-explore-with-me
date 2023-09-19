@@ -95,7 +95,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         // у нового события поля confirmedRequests и views = 0
         return eventMapper.toEventFullDto(saveEvent, categoryMapper.toCategoryDto(category), 0,
-                userMapper.toUserShortDto(initiator), 0);
+                userMapper.toUserShortDto(initiator), 0, null);
     }
 
     @Override
@@ -114,7 +114,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 categoryMapper.toCategoryDto(event.getCategory()),
                 confirmedRequests.getOrDefault(event.getId(), 0),
                 userMapper.toUserShortDto(event.getInitiator()),
-                views.getOrDefault(event.getId(), 0));
+                views.getOrDefault(event.getId(), 0),
+                eventMapper.toAdminCommentDto(event.getAdminComments()));
     }
 
     @Transactional
@@ -141,7 +142,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 categoryMapper.toCategoryDto(updateEvent.getCategory()),
                 confirmedRequests.getOrDefault(updateEvent.getId(), 0),
                 userMapper.toUserShortDto(updateEvent.getInitiator()),
-                views.getOrDefault(updateEvent.getId(), 0));
+                views.getOrDefault(updateEvent.getId(), 0),
+                eventMapper.toAdminCommentDto(event.getAdminComments()));
     }
 
     private Event checkBeforeUpdate(Event event, UpdateEventUserRequest updateEventUserRequest) {
