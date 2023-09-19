@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "bc0cdc39-6a3e-402a-baac-af4da590a335",
-		"name": "Дополнительная функциональность",
+		"name": "Дополнительная функциональность origin",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "26764226"
 	},
@@ -23,16 +23,18 @@
 							"const target = pm.response.json();\r",
 							"\r",
 							"pm.test(\"Пользователь должен содержать поля: id, name, email\", function () {\r",
-							"pm.expect(target).to.have.property('id');\r",
-							"pm.expect(target).to.have.property('name');\r",
-							"pm.expect(target).to.have.property('email');\r",
+							"    pm.expect(target).to.have.property('id');\r",
+							"    pm.expect(target).to.have.property('name');\r",
+							"    pm.expect(target).to.have.property('email');\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
 							"    pm.expect(target.id).to.not.be.null;\r",
 							"    pm.expect(source.name).equal(target.name, 'Имя пользователя должно соответствовать отправленному в запросе');\r",
 							"    pm.expect(source.email).equal(target.email, 'Почта пользователя должна соответствовать отправленной в запросе');\r",
-							"});"
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"uid\", target.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -43,7 +45,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"Jayme_Goldner@gmail.com\",\r\n    \"name\": \"Dr. Betty Jerde\"\r\n}",
+					"raw": "{\r\n    \"email\": \"chita@gmail.com\",\r\n    \"name\": \"Артем Жеребцов\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -79,8 +81,10 @@
 							"    pm.expect(target.length).to.eql(1);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Идентификатор пользователя должен быть равен 1\", function () {\r",
+							"pm.test(\"Данные в ответе должны соответствовать\", function () {\r",
 							"    pm.expect(target[0].id).equal(1);\r",
+							"    pm.expect(target[0].name).equal(\"Артем Жеребцов\");\r",
+							"    pm.expect(target[0].email).equal(\"chita@gmail.com\");\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -91,7 +95,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/admin/users?ids=1",
+					"raw": "{{baseUrl}}/admin/users?ids={{uid}}",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -102,7 +106,7 @@
 					"query": [
 						{
 							"key": "ids",
-							"value": "1"
+							"value": "{{uid}}"
 						}
 					]
 				}
@@ -133,7 +137,9 @@
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
 							"    pm.expect(target.id).to.not.be.null;\r",
 							"    pm.expect(source.name).equal(target.name, 'Название категории должно совпадать с отправленным');\r",
-							"});"
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"catid\", target.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -176,8 +182,8 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-							"    pm.expect(target.id).equal(1, 'Идентификатор категории должен соответствовать идентификатору в запросе');\r",
-							"    pm.expect(target.name).equal(\"e-business\", 'Название категории должно соответствовать названию категории с указанным идентификатором');\r",
+							"    pm.expect(target.id).equal(1);\r",
+							"    pm.expect(target.name).equal(\"e-business\");\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -199,7 +205,7 @@
 					"variable": [
 						{
 							"key": "catId",
-							"value": "1"
+							"value": "{{catid}}"
 						}
 					]
 				}
@@ -249,7 +255,9 @@
 							"    pm.expect(target.location.lat.toString()).equal(source.location.lat.toString(), 'Широта локации проведения события должна соответствовать широте локации проведения события в запросе');\r",
 							"    pm.expect(target.location.lon.toString()).equal(source.location.lon.toString(), 'Долгота локации проведения события должна соответствовать долготе локации проведения события в запросе');\r",
 							"    pm.expect(target.requestModeration.toString()).equal(source.requestModeration.toString(), 'Необходимость модерации события должна соответствовать необходимости модерации события в запросе');\r",
-							"});"
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"eid\", target.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -260,7 +268,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"annotation\": \"Amet est assumenda similique qui. Repellendus corporis modi et sed pariatur repudiandae perspiciatis corrupti et. Ad id deleniti illo dolorem. Consequatur inventore rerum et qui facere et eligendi et.\",\r\n    \"category\": 1,\r\n    \"description\": \"Odio consequatur nemo soluta. Sed ut odit labore eum et sequi eaque maiores. Voluptates quos itaque eaque asperiores non consequatur. Doloribus quia similique. Eum eligendi in dolor dolorem cum.\\n \\rIpsam dolor eos natus. Quia eligendi quasi laborum amet molestias. Vel enim excepturi ab et dolore iusto doloribus fugiat deserunt. Quis optio officiis aspernatur eos et quia earum. Quibusdam accusantium tenetur porro velit perspiciatis sit qui.\\n \\rNisi laboriosam nihil temporibus. Nulla quod possimus nihil est. Non et et consectetur porro explicabo unde.\",\r\n    \"eventDate\": \"2023-09-23 23:00:18\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 961,\r\n    \"requestModeration\": false,\r\n    \"title\": \"Nesciunt sapiente sit exercitationem deserunt nostrum omnis nobis.\"\r\n}",
+					"raw": "{\r\n    \"annotation\": \"annotation..........\",\r\n    \"category\": {{catid}},\r\n    \"description\": \"description.........\",\r\n    \"eventDate\": \"2023-10-10 10:10:10\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 13,\r\n    \"requestModeration\": false,\r\n    \"title\": \"title\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -280,7 +288,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "1"
+							"value": "{{uid}}"
 						}
 					]
 				}
@@ -320,7 +328,6 @@
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
 							"    pm.expect(target.id).to.not.be.null;\r",
-							"    pm.expect(target.id).equal(1);\r",
 							"    pm.expect(target.state).equal(\"PENDING\");\r",
 							"});"
 						],
@@ -345,11 +352,11 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "1"
+							"value": "{{uid}}"
 						},
 						{
 							"key": "eventId",
-							"value": "1"
+							"value": "{{eid}}"
 						}
 					]
 				}
@@ -391,7 +398,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-							"    pm.expect(target.id).equal(1, 'Идентификатор категории должен соответствовать идентификатору в запросе');\r",
+							"    pm.expect(target.id).to.not.be.null;\r",
 							"    pm.expect(target.state).equal(\"PENDING\");\r",
 							"});"
 						],
@@ -469,7 +476,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"annotation\": \"Amet est assumenda similique qui. Repellendus corporis modi et sed pariatur repudiandae perspiciatis corrupti et. Ad id deleniti illo dolorem. Consequatur inventore rerum et qui facere et eligendi et.\",\r\n    \"category\": 1,\r\n    \"description\": \"Odio consequatur nemo soluta. Sed ut odit labore eum et sequi eaque maiores. Voluptates quos itaque eaque asperiores non consequatur. Doloribus quia similique. Eum eligendi in dolor dolorem cum.\\n \\rIpsam dolor eos natus. Quia eligendi quasi laborum amet molestias. Vel enim excepturi ab et dolore iusto doloribus fugiat deserunt. Quis optio officiis aspernatur eos et quia earum. Quibusdam accusantium tenetur porro velit perspiciatis sit qui.\\n \\rNisi laboriosam nihil temporibus. Nulla quod possimus nihil est. Non et et consectetur porro explicabo unde.\",\r\n    \"eventDate\": \"2023-09-23 23:00:18\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 961,\r\n    \"requestModeration\": false,\r\n    \"stateAction\": \"REJECT_EVENT\",\r\n    \"title\": \"Nesciunt sapiente sit exercitationem deserunt nostrum omnis nobis.\",\r\n    \"comment\": \"Событие отклонено по причине №1\"\r\n}",
+					"raw": "{\r\n    \"annotation\": \"annotation..........\",\r\n    \"category\": {{catid}},\r\n    \"description\": \"description.........\",\r\n    \"eventDate\": \"2023-10-10 10:10:10\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 13,\r\n    \"requestModeration\": false,\r\n    \"stateAction\": \"REJECT_EVENT\",\r\n    \"title\": \"title\",\r\n    \"comment\": \"Событие отклонено по причине №1\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -489,7 +496,7 @@
 					"variable": [
 						{
 							"key": "eventId",
-							"value": "1"
+							"value": "{{eid}}"
 						}
 					]
 				}
@@ -530,7 +537,6 @@
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
 							"    pm.expect(target.id).to.not.be.null;\r",
-							"    pm.expect(target.id).equal(1);\r",
 							"    pm.expect(target.state).equal(\"CANCELED\");\r",
 							"    pm.expect(target.adminComments.length).eql(1);\r",
 							"    pm.expect(target.adminComments[0].comment).equal(\"Событие отклонено по причине №1\");\r",
@@ -557,11 +563,11 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "1"
+							"value": "{{uid}}"
 						},
 						{
 							"key": "eventId",
-							"value": "1"
+							"value": "{{eid}}"
 						}
 					]
 				}
@@ -602,7 +608,6 @@
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
 							"    pm.expect(target.id).to.not.be.null;\r",
-							"    pm.expect(target.id).equal(1);\r",
 							"    pm.expect(target.state).equal(\"PENDING\");\r",
 							"    pm.expect(target.adminComments.length).eql(1);\r",
 							"    pm.expect(target.adminComments[0].comment).equal(\"Событие отклонено по причине №1\");\r",
@@ -617,7 +622,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"annotation\": \"Amet est assumenda similique qui. Repellendus corporis modi et sed pariatur repudiandae perspiciatis corrupti et. Ad id deleniti illo dolorem. Consequatur inventore rerum et qui facere et eligendi et.\",\r\n    \"category\": 1,\r\n    \"description\": \"Odio consequatur nemo soluta. Sed ut odit labore eum et sequi eaque maiores. Voluptates quos itaque eaque asperiores non consequatur. Doloribus quia similique. Eum eligendi in dolor dolorem cum.\\n \\rIpsam dolor eos natus. Quia eligendi quasi laborum amet molestias. Vel enim excepturi ab et dolore iusto doloribus fugiat deserunt. Quis optio officiis aspernatur eos et quia earum. Quibusdam accusantium tenetur porro velit perspiciatis sit qui.\\n \\rNisi laboriosam nihil temporibus. Nulla quod possimus nihil est. Non et et consectetur porro explicabo unde.\",\r\n    \"eventDate\": \"2023-09-23 23:00:18\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 961,\r\n    \"requestModeration\": false,\r\n    \"stateAction\": \"SEND_TO_REVIEW\",\r\n    \"title\": \"Nesciunt sapiente sit exercitationem deserunt nostrum omnis nobis.\"\r\n}",
+					"raw": "{\r\n    \"annotation\": \"annotation..........\",\r\n    \"category\": {{catid}},\r\n    \"description\": \"description.........\",\r\n    \"eventDate\": \"2023-10-10 10:10:10\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 13,\r\n    \"requestModeration\": false,\r\n    \"stateAction\": \"SEND_TO_REVIEW\",\r\n    \"title\": \"title\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -638,11 +643,11 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "1"
+							"value": "{{uid}}"
 						},
 						{
 							"key": "eventId",
-							"value": "1"
+							"value": "{{eid}}"
 						}
 					]
 				}
@@ -683,7 +688,6 @@
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
 							"    pm.expect(target.id).to.not.be.null;\r",
-							"    pm.expect(target.id).equal(1);\r",
 							"    pm.expect(target.state).equal(\"PENDING\");\r",
 							"    pm.expect(target.adminComments.length).eql(1);\r",
 							"    pm.expect(target.adminComments[0].comment).equal(\"Событие отклонено по причине №1\");\r",
@@ -710,11 +714,11 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "1"
+							"value": "{{uid}}"
 						},
 						{
 							"key": "eventId",
-							"value": "1"
+							"value": "{{eid}}"
 						}
 					]
 				}
@@ -769,7 +773,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"annotation\": \"Amet est assumenda similique qui. Repellendus corporis modi et sed pariatur repudiandae perspiciatis corrupti et. Ad id deleniti illo dolorem. Consequatur inventore rerum et qui facere et eligendi et.\",\r\n    \"category\": 1,\r\n    \"description\": \"Odio consequatur nemo soluta. Sed ut odit labore eum et sequi eaque maiores. Voluptates quos itaque eaque asperiores non consequatur. Doloribus quia similique. Eum eligendi in dolor dolorem cum.\\n \\rIpsam dolor eos natus. Quia eligendi quasi laborum amet molestias. Vel enim excepturi ab et dolore iusto doloribus fugiat deserunt. Quis optio officiis aspernatur eos et quia earum. Quibusdam accusantium tenetur porro velit perspiciatis sit qui.\\n \\rNisi laboriosam nihil temporibus. Nulla quod possimus nihil est. Non et et consectetur porro explicabo unde.\",\r\n    \"eventDate\": \"2023-09-23 23:00:18\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 961,\r\n    \"requestModeration\": false,\r\n    \"stateAction\": \"REJECT_EVENT\",\r\n    \"title\": \"Nesciunt sapiente sit exercitationem deserunt nostrum omnis nobis.\",\r\n    \"comment\": \"Событие отклонено по причине №2\"\r\n}",
+					"raw": "{\r\n    \"annotation\": \"annotation..........\",\r\n    \"category\": {{catid}},\r\n    \"description\": \"description.........\",\r\n    \"eventDate\": \"2023-10-10 10:10:10\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 13,\r\n    \"requestModeration\": false,\r\n    \"stateAction\": \"REJECT_EVENT\",\r\n    \"title\": \"title\",\r\n    \"comment\": \"Событие отклонено по причине №2\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -789,7 +793,7 @@
 					"variable": [
 						{
 							"key": "eventId",
-							"value": "1"
+							"value": "{{eid}}"
 						}
 					]
 				}
@@ -830,7 +834,6 @@
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
 							"    pm.expect(target.id).to.not.be.null;\r",
-							"    pm.expect(target.id).equal(1);\r",
 							"    pm.expect(target.state).equal(\"PENDING\");\r",
 							"    pm.expect(target.adminComments.length).eql(2);\r",
 							"    pm.expect(target.adminComments[1].comment).equal(\"Событие отклонено по причине №2\");\r",
@@ -845,7 +848,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"annotation\": \"Amet est assumenda similique qui. Repellendus corporis modi et sed pariatur repudiandae perspiciatis corrupti et. Ad id deleniti illo dolorem. Consequatur inventore rerum et qui facere et eligendi et.\",\r\n    \"category\": 1,\r\n    \"description\": \"Odio consequatur nemo soluta. Sed ut odit labore eum et sequi eaque maiores. Voluptates quos itaque eaque asperiores non consequatur. Doloribus quia similique. Eum eligendi in dolor dolorem cum.\\n \\rIpsam dolor eos natus. Quia eligendi quasi laborum amet molestias. Vel enim excepturi ab et dolore iusto doloribus fugiat deserunt. Quis optio officiis aspernatur eos et quia earum. Quibusdam accusantium tenetur porro velit perspiciatis sit qui.\\n \\rNisi laboriosam nihil temporibus. Nulla quod possimus nihil est. Non et et consectetur porro explicabo unde.\",\r\n    \"eventDate\": \"2023-09-23 23:00:18\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 961,\r\n    \"requestModeration\": false,\r\n    \"stateAction\": \"SEND_TO_REVIEW\",\r\n    \"title\": \"Nesciunt sapiente sit exercitationem deserunt nostrum omnis nobis.\"\r\n}",
+					"raw": "{\r\n    \"annotation\": \"annotation..........\",\r\n    \"category\": {{catid}},\r\n    \"description\": \"description.........\",\r\n    \"eventDate\": \"2023-10-10 10:10:10\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 13,\r\n    \"requestModeration\": false,\r\n    \"stateAction\": \"SEND_TO_REVIEW\",\r\n    \"title\": \"title\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -866,11 +869,11 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "1"
+							"value": "{{uid}}"
 						},
 						{
 							"key": "eventId",
-							"value": "1"
+							"value": "{{eid}}"
 						}
 					]
 				}
@@ -922,7 +925,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"annotation\": \"Amet est assumenda similique qui. Repellendus corporis modi et sed pariatur repudiandae perspiciatis corrupti et. Ad id deleniti illo dolorem. Consequatur inventore rerum et qui facere et eligendi et.\",\r\n    \"category\": 1,\r\n    \"description\": \"Odio consequatur nemo soluta. Sed ut odit labore eum et sequi eaque maiores. Voluptates quos itaque eaque asperiores non consequatur. Doloribus quia similique. Eum eligendi in dolor dolorem cum.\\n \\rIpsam dolor eos natus. Quia eligendi quasi laborum amet molestias. Vel enim excepturi ab et dolore iusto doloribus fugiat deserunt. Quis optio officiis aspernatur eos et quia earum. Quibusdam accusantium tenetur porro velit perspiciatis sit qui.\\n \\rNisi laboriosam nihil temporibus. Nulla quod possimus nihil est. Non et et consectetur porro explicabo unde.\",\r\n    \"eventDate\": \"2023-09-23 23:00:18\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 961,\r\n    \"requestModeration\": false,\r\n    \"stateAction\": \"PUBLISH_EVENT\",\r\n    \"title\": \"Nesciunt sapiente sit exercitationem deserunt nostrum omnis nobis.\"\r\n}",
+					"raw": "{\r\n    \"annotation\": \"annotation..........\",\r\n    \"category\": {{catid}},\r\n    \"description\": \"description.........\",\r\n    \"eventDate\": \"2023-10-10 10:10:10\",\r\n    \"location\": {\r\n        \"lat\": 13.5058,\r\n        \"lon\": 96.7891\r\n    },\r\n    \"paid\": false,\r\n    \"participantLimit\": 13,\r\n    \"requestModeration\": false,\r\n    \"stateAction\": \"PUBLISH_EVENT\",\r\n    \"title\": \"title\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -942,7 +945,7 @@
 					"variable": [
 						{
 							"key": "eventId",
-							"value": "1"
+							"value": "{{eid}}"
 						}
 					]
 				}
@@ -950,10 +953,45 @@
 			"response": []
 		}
 	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
 	"variable": [
 		{
 			"key": "baseUrl",
 			"value": "http://localhost:8080"
+		},
+		{
+			"key": "uid",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "catid",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "eid",
+			"value": "",
+			"type": "string"
 		}
 	]
 }
