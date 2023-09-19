@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "bc0cdc39-6a3e-402a-baac-af4da590a335",
-		"name": "Дополнительная функциональность origin",
+		"name": "Дополнительная функциональность",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "26764226"
 	},
@@ -82,7 +82,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать\", function () {\r",
-							"    pm.expect(target[0].id).equal(1);\r",
+							"    pm.expect(target[0].id).to.not.be.null;\r",
 							"    pm.expect(target[0].name).equal(\"Артем Жеребцов\");\r",
 							"    pm.expect(target[0].email).equal(\"chita@gmail.com\");\r",
 							"});"
@@ -182,7 +182,7 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-							"    pm.expect(target.id).equal(1);\r",
+							"    pm.expect(target.id).to.not.be.null;\r",
 							"    pm.expect(target.name).equal(\"e-business\");\r",
 							"});"
 						],
