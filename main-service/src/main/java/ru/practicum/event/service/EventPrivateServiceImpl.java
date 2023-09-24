@@ -38,12 +38,12 @@ import static ru.practicum.event.model.EventState.PUBLISHED;
 import static ru.practicum.event.model.EventStateAction.CANCEL_REVIEW;
 import static ru.practicum.event.model.EventStateAction.SEND_TO_REVIEW;
 import static ru.practicum.request.model.RequestParticipationState.*;
-import static ru.practicum.utils.Constants.NUMBER_HOURS_BEFORE_EVENT;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class EventPrivateServiceImpl implements EventPrivateService {
+    public static final long NUMBER_HOURS_BEFORE_EVENT = 2L;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final UserService userService;
@@ -95,7 +95,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         // у нового события поля confirmedRequests и views = 0
         return eventMapper.toEventFullDto(saveEvent, categoryMapper.toCategoryDto(category), 0,
-                userMapper.toUserShortDto(initiator), 0);
+                userMapper.toUserShortDto(initiator), 0, null);
     }
 
     @Override
@@ -114,7 +114,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 categoryMapper.toCategoryDto(event.getCategory()),
                 confirmedRequests.getOrDefault(event.getId(), 0),
                 userMapper.toUserShortDto(event.getInitiator()),
-                views.getOrDefault(event.getId(), 0));
+                views.getOrDefault(event.getId(), 0),
+                eventMapper.toAdminCommentDto(event.getAdminComments()));
     }
 
     @Transactional
@@ -141,7 +142,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 categoryMapper.toCategoryDto(updateEvent.getCategory()),
                 confirmedRequests.getOrDefault(updateEvent.getId(), 0),
                 userMapper.toUserShortDto(updateEvent.getInitiator()),
-                views.getOrDefault(updateEvent.getId(), 0));
+                views.getOrDefault(updateEvent.getId(), 0),
+                eventMapper.toAdminCommentDto(event.getAdminComments()));
     }
 
     private Event checkBeforeUpdate(Event event, UpdateEventUserRequest updateEventUserRequest) {

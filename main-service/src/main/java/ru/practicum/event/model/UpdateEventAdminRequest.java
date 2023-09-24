@@ -2,7 +2,7 @@ package ru.practicum.event.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.utils.Constants;
+import ru.practicum.utils.DtoFormats;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +15,7 @@ public class UpdateEventAdminRequest {
     private String annotation;
     private Long category;
     private String description;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_TIME_PATTERN)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DtoFormats.DATE_TIME_PATTERN)
     private LocalDateTime eventDate;
     private Location location;
     private Boolean paid;
@@ -23,4 +23,5 @@ public class UpdateEventAdminRequest {
     private Boolean requestModeration;
     private EventStateAction stateAction;
     private String title;
+    private String comment;
 }

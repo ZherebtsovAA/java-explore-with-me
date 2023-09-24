@@ -10,6 +10,7 @@ import ru.practicum.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -55,6 +56,14 @@ public class Event {
     private EventState state;
     @Column(nullable = false, length = 120)
     private String title;
+    @ElementCollection
+    @CollectionTable(name = "admin_comments_event", joinColumns = @JoinColumn(name = "event_id"))
+    @AttributeOverrides({
+            @AttributeOverride(name = "comment", column = @Column(name = "comment")),
+            @AttributeOverride(name = "createdOn", column = @Column(name = "comment_created")),
+    })
+    @ToString.Exclude
+    private List<AdminComment> adminComments;
 
     public Location getLocation() {
         return new Location(lat, lon);

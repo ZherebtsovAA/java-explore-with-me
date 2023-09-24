@@ -64,3 +64,11 @@ CREATE TABLE IF NOT EXISTS compilations_events (
 );
 
 CREATE INDEX IF NOT EXISTS index_compilations_events ON compilations_events (compilations_id, event_id);
+
+CREATE TABLE IF NOT EXISTS admin_comments_event (
+    event_id BIGINT NOT NULL REFERENCES events (id),
+    comment VARCHAR(500) NOT NULL,
+    comment_created TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS index_ace_event_id ON admin_comments_event (event_id);

@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.utils.Constants.DATE_TIME_PATTERN;
+import static ru.practicum.utils.DtoFormats.DATE_TIME_PATTERN;
 
 
 @RequiredArgsConstructor
