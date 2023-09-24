@@ -38,12 +38,12 @@ import static ru.practicum.event.model.EventState.PUBLISHED;
 import static ru.practicum.event.model.EventStateAction.CANCEL_REVIEW;
 import static ru.practicum.event.model.EventStateAction.SEND_TO_REVIEW;
 import static ru.practicum.request.model.RequestParticipationState.*;
-import static ru.practicum.utils.Constants.NUMBER_HOURS_BEFORE_EVENT;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class EventPrivateServiceImpl implements EventPrivateService {
+    public static final long NUMBER_HOURS_BEFORE_EVENT = 2L;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final UserService userService;

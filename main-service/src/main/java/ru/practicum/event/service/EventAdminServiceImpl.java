@@ -26,12 +26,12 @@ import java.util.Map;
 import static ru.practicum.event.model.EventState.*;
 import static ru.practicum.event.model.EventStateAction.PUBLISH_EVENT;
 import static ru.practicum.event.model.EventStateAction.REJECT_EVENT;
-import static ru.practicum.utils.Constants.NUMBER_HOURS_FROM_DATE_PUBLICATION;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class EventAdminServiceImpl implements EventAdminService {
+    public static final long NUMBER_HOURS_FROM_DATE_PUBLICATION = 1L;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final UserMapper userMapper;
@@ -175,12 +175,7 @@ public class EventAdminServiceImpl implements EventAdminService {
             if (comment.length() < 20 || comment.length() > 500 || comment.isBlank()) {
                 throw new BadRequestException("Длина поля comment должна быть: min = 20, max = 500");
             }
-            List<AdminComment> adminComments;
-            if (event.getAdminComments().isEmpty()) {
-                adminComments = new ArrayList<>();
-            } else {
-                adminComments = event.getAdminComments();
-            }
+            List<AdminComment> adminComments = event.getAdminComments();
             adminComments.add(new AdminComment(comment, LocalDateTime.now()));
             event.setAdminComments(adminComments);
         }
